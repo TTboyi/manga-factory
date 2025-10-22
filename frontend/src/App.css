@@ -1,0 +1,134 @@
+/* 在 App.css 文件中加入原本的样式 */
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: linear-gradient(135deg, #E0F4FF, #F3E8FF, #E6FFF9);
+  background-size: 300% 300%;
+  animation: gradientBreath 10s ease infinite;
+  margin: 0;
+  color: #1F2937;
+}
+
+@keyframes gradientBreath {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 120px;
+}
+
+.nav-bar {
+  height: 80px;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.hero-section {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #3EBBF5, #A78BFA);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.primary-btn {
+  width: 320px;
+  height: 80px;
+  background: linear-gradient(to right, #3EBBF5, #06D6A0);
+  border-radius: 16px;
+  font-size: 24px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.primary-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+}
+
+.hero-cta-btn {
+  width: 280px;
+  height: 70px;
+  background: linear-gradient(135deg, #FFFFFF, rgba(255, 255, 255, 0.95));
+  border-radius: 50px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #A78BFA;
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-cta-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.hero-cta-btn:hover::before {
+  left: 100%;
+}
+
+.hero-cta-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 40px rgba(255, 255, 255, 0.5);
+  background: linear-gradient(135deg, #FFFFFF, #F0F9FF);
+}
+
+.hero-cta-btn:active {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.scroll-down-arrow {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #3EBBF5, #A78BFA);
+  border-radius: 16px;
+}
+
+.flow-chart {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* 为 data-card 添加渐变边框 */
+.data-card {
+  border: 2px solid transparent;
+  border-image: linear-gradient(45deg, #3EBBF5, #A78BFA);
+  border-image-slice: 1;
+  border-radius: 12px;
+}
