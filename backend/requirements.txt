@@ -1,0 +1,9 @@
+Flask==2.3.3
+Flask-CORS==4.0.0
+Flask-SQLAlchemy==3.0.5
+PyMySQL==1.1.0
+cryptography==41.0.7
+volcengine-python-sdk==1.0.50
+python-dotenv==1.0.0
+requests==2.31.0
+Werkzeug==2.3.7
