@@ -2,7 +2,10 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
 
-db = SQLAlchemy()
+from extensions import db
+
+
+#db = SQLAlchemy()
 
 class Novel(db.Model):
     """小说表，存储上传的小说文件或直接输入的文本"""
@@ -132,3 +135,10 @@ class Project(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
+        
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nickname = db.Column(db.String(64), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_admin = db.Column(db.Boolean, default=False)
