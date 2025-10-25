@@ -1,117 +1,161 @@
-// 小说相关类型
-export interface Novel {
-  id: number;
-  title: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
-}
+/**
+ * ===============================
+ * 📘 全局类型定义
+ * 文件位置: /src/types/index.ts
+ * 用途: 定义小说分析、视觉规范、分镜生成等接口结构
+ * ===============================
+ */
 
-// src/types/index.ts
-
+/**
+ * 🌈 场景信息
+ * 用于描述小说中提取出的每个分镜或剧情段落
+ */
 export interface Scene {
-  id: number;
-  novel_id: number;
+  /** 场景唯一标识符 */
+  id: string;
+
+  /** 场景标题（如：第一章 遇见） */
   title: string;
+
+  /** 场景内容或简要描述 */
   description: string;
-  characters: string[];
-  setting: string;
-  mood: string;
-  scene_number: number;
-  created_at: string;
-  type: string;  // 添加这个属性
-  time_of_day: string;  // 添加这个属性
-  image_url?: string;  // 添加这个属性，且是可选的
 }
 
+/**
+ * 🎨 视觉规范对象 (VisualSpec)
+ * 由角色特征 + 画风特征 组成
+ * 后端由文字+图片分析得到，统一生成的视觉基调
+ */
+export interface VisualSpec {
+  /** 角色特征总结文本 */
+  role_features: string;
 
-// 场景图像相关类型
-export interface SceneImage {
-  id: number;
-  scene_id: number;
-  image_url: string;
-  style: string;
-  created_at: string;
+  /** 风格特征描述文本 */
+  art_style: string;
+
+  /** 参考图像的URL或本地路径 */
+  reference_images?: string[];
+
+  /** 模型推荐的关键词提示（可选） */
+  prompt_tags?: string[];
+
+  /** 附加备注或AI分析结果 */
+  notes?: string;
 }
 
-// 项目相关类型
-export interface Project {
-  id: number;
-  novel_id: number;
-  name: string;
-  description?: string;
-  style: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-}
+/**
+ * 📖 小说生成结果
+ * 从用户上传的文本或文件生成结构化小说内容
+ */
+export interface NovelResponse {
+  /** 小说全文 */
+  novel_text: string;
 
-// API响应类型
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: string;
-}
-
-// 上传文件响应类型
-export interface UploadResponse {
-  novel: Novel;
-  message: string;
-}
-
-// 文本提交响应类型
-export interface TextSubmissionResponse {
-  novel: Novel;
-  message: string;
-}
-
-// 场景提取响应类型
-export interface SceneExtractionResponse {
-  novel: Novel;
+  /** 小说拆分得到的场景数组 */
   scenes: Scene[];
-  message: string;
+
+  /** 小说标题（可选） */
+  title?: string;
+
+  /** 作者名称（可选） */
+  author?: string;
 }
 
-// 场景提取请求类型
-export interface SceneExtractionRequest {
-  novel_id: number;
-  max_scenes?: number;
+/**
+ * 🧠 场景识别结果
+ * 用于从小说中提取分镜段落（简化版）
+ */
+export interface SceneRecognitionResponse {
+  scenes: Scene[];
 }
 
-// 文本提交请求类型
-export interface TextSubmissionRequest {
-  title: string;
-  text: string;
+/**
+ * 🖼️ 分镜图像生成结果
+ * 每个元素对应一个生成的图片URL
+ */
+export interface ImageGenResponse {
+  /** 成功生成的图片URL数组 */
+  images: string[];
+
+  /** 可选任务ID（用于异步轮询） */
+  task_id?: string;
+
+  /** 每张图片的生成prompt */
+  prompts?: string[];
+
+  /** 模型使用统计（如token数） */
+  usage?: {
+    image_count?: number;
+    model?: string;
+  };
 }
 
-// 项目创建请求类型
-export interface ProjectCreationRequest {
-  novel_id: number;
+/**
+ * 💾 项目信息结构
+ * 表示一个完整的“小说→视觉→分镜”生成任务
+ */
+export interface ProjectData {
+  /** 唯一ID（数据库或内存中） */
+  id?: string;
+
+  /** 用户输入的项目名称（前端输入） */
   name: string;
-  description?: string;
-  style: string;
+
+  /** 小说原文内容 */
+  novel_text?: string;
+
+  /** 拆分后的场景数组 */
+  scenes?: Scene[];
+
+  /** AI生成的视觉规范 */
+  visual_spec?: VisualSpec;
+
+  /** 生成的分镜图像数组 */
+  images?: string[];
+
+  /** 创建时间（后端返回） */
+  created_at?: string;
+
+  /** 最后更新时间 */
+  updated_at?: string;
 }
 
-// 项目创建响应类型
-export interface ProjectCreationResponse {
-  project_id: number;
-  message: string;
+/**
+ * 📤 后端统一响应包装
+ * 若后端返回 data + success + msg 结构，可使用该类型
+ */
+export interface ApiResponse<T> {
+  /** 是否成功 */
+  success: boolean;
+
+  /** 消息文本（错误/提示） */
+  message?: string;
+
+  /** 实际数据内容 */
+  data?: T;
 }
 
-// 漫画风格枚举
-export enum MangaStyle {
-  MANGA = "manga",
-  COMIC = "comic",
-  REALISTIC = "realistic",
-  CHIBI = "chibi",
-  SKETCH = "sketch"
+/**
+ * ⚙️ 文件上传结果
+ * 用于上传 txt/doc/image 后返回的路径或内容
+ */
+export interface UploadResult {
+  file_name: string;
+  file_size: number;
+  file_url?: string;
+  parsed_text?: string;
 }
 
-// 项目状态枚举
-export enum ProjectStatus {
-  CREATED = "created",
-  PROCESSING = "processing",
-  COMPLETED = "completed",
-  FAILED = "failed"
-}
+/**
+ * 🧩 阶段状态枚举（可用于前端进度条 / 流程控制）
+ */
+export type WorkflowStage =
+  | "INIT"
+  | "NOVEL_UPLOADED"
+  | "SCENE_EXTRACTED"
+  | "VISUAL_ANALYZED"
+  | "IMAGE_GENERATED"
+  | "COMPLETED";
+
+
+  

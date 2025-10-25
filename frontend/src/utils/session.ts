@@ -19,7 +19,7 @@ export const clearToken = () => {
 
 // ========== Axios 实例封装 ==========
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000", // Flask 后端地址
+  baseURL: "http://127.0.0.1:5000", // Flask 后端地址
   headers: { "Content-Type": "application/json" },
 });
 
@@ -34,6 +34,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
+    
     const original = error.config;
 
     // 如果 token 过期，尝试刷新
@@ -43,7 +44,7 @@ api.interceptors.response.use(
         const refresh = getRefreshToken();
         if (!refresh) throw new Error("无刷新令牌");
 
-        const res = await axios.post("http://127.0.0.1:8000/auth/refresh", {}, {
+        const res = await axios.post("http://127.0.0.1:5000/auth/refresh", {}, {
           headers: { Authorization: `Bearer ${refresh}` },
         });
 

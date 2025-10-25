@@ -3,7 +3,7 @@ import "../App.css";
 import FlowChart from "../FlowChart";
 import { Icon } from "@iconify/react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-//import HomePage from './HomePage'; // 这里导入你的 HomePage
+import HomePage from './HomePage'; // 这里导入你的 HomePage
 import { Link } from 'react-router-dom';
 
 
