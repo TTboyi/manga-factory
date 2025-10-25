@@ -5,8 +5,7 @@ from utils.jwt_utils import generate_tokens, blacklist_token
 from utils.response_utils import success, error
 from models import User
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
-#from flask_jwt_extended import jwt_required, get_jwt_identity
-#from models import User
+
 
 auth_bp = Blueprint("auth", __name__)
 
