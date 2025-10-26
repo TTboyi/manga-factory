@@ -96,9 +96,9 @@
    <div style="text-align: center;">
     <table style="margin: 0 auto;">
     <tr>
-      <td><img src="etc_png/show03.png" alt="page03" width="200"></td>
-      <td><img src="etc_png/show02.png" alt="page02" width="200"></td>
-      <td><img src="etc_png/show01.png" alt="page01" width="200"></td>
+      <td><img src="doc/etc_png/show03.png" alt="page03" width="200"></td>
+      <td><img src="doc/etc_png/show02.png" alt="page02" width="200"></td>
+      <td><img src="doc/etc_png/show01.png" alt="page01" width="200"></td>
     </tr>
   </table>
   <p style="font-weight: bold; margin-bottom: 10px;">项目界面展示</p>
@@ -394,6 +394,7 @@ VOLCENGINE_SERVICE_ID=your_service_id
 - 项目主页: https://github.com/TTboyi/manga-factory
 - 邮箱: your-email@example.com
 - 官方网站: https://manga-factory.com
+
 
 
 
