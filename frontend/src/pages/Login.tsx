@@ -17,7 +17,7 @@ const Login: React.FC = () => {
       if (token) {
         setToken(token);
         alert("登录成功！");
-        navigate("/home");
+        navigate("/center");
       } else {
         alert("登录失败：未返回 Token");
       }

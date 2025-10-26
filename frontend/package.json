@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@fortawesome/fontawesome-free": "^7.1.0",
     "@iconify/react": "^6.0.2",
     "@tailwindcss/vite": "^4.1.15",
     "antd": "^5.27.6",
@@ -21,6 +22,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.65.0",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^7.9.4",
     "styled-components": "^6.1.19",
     "tailwindcss": "^4.1.15"

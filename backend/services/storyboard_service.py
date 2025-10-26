@@ -2,159 +2,154 @@ import time
 import requests
 from typing import List, Dict, Any
 from config import Config
+from services.utils import load_prompt
 from services.doubao_client import call_doubao
-import json
+import os
 
-
-# ================== 文本安全过滤 ==================
 def sanitize_text(text: str) -> str:
-    """
-    基础敏感词过滤，防止触发 DataInspectionFailed
-    """
     banned = [
-        "血", "枪", "死亡", "裸", "杀", "暴力", "尸", "宗教", "战争",
-        "性", "吻", "毒", "酒", "吸烟", "恐怖", "爆炸", "暗杀"
+        "血","枪","死亡","裸","杀","暴力","尸","宗教","战争",
+        "性","吻","毒","酒","吸烟","恐怖","爆炸","暗杀"
     ]
-    for word in banned:
-        text = text.replace(word, "＊")
+    for w in banned:
+        text = text.replace(w, "＊")
     return text
 
 
 def refine_scene_for_image(scene_text: str) -> str:
     """
-    当 prompt 被审核拒绝时调用，使用豆包模型自动改写安全描述
+    安全改写，当被DashScope拒绝时。
     """
     prompt = (
-        "请将以下场景描述改写为安全、积极、健康的画面提示，"
-        "去除血腥、暴力、裸露、宗教或政治内容，只保留叙事性画面与情感氛围：\n\n"
+        "请将以下场景描述改写为安全、积极、健康的画面提示：\n\n"
         f"{scene_text}"
     )
-    try:
-        refined = call_doubao(
-            model="doubao-seed-1-6-thinking-250715",   # ✅ 你想用的豆包模型名称
-            messages=[
-                {"role": "system", "content": "你是一个负责任的安全改写助手，擅长将可能违规的文本改写为健康安全的描述。"},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=1024
-        )
-        print("[豆包改写成功]")
-        return refined.strip()
-    except Exception as e:
-        print(f"[豆包改写失败，使用原文本]: {e}")
-        return scene_text
+    refined = call_doubao(
+        model="doubao-seed-1-6-flash-250828",
+        messages=[
+            {"role": "system", "content": "你是安全文本改写助手，负责将可能违规内容改写为健康、积极的AI绘画提示。"},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=3000
+    )
+    return refined.strip()
 
 
-
-
-# ================== 构建单个分镜 Prompt ==================
 def build_image_prompt_for_scene(scene: Dict[str, Any], visual_spec: Dict[str, Any]) -> str:
+    base_prompt = load_prompt("绘画提示词.md")
+    scene_desc = sanitize_text(scene.get("description", ""))
+    title = sanitize_text(scene.get("title", ""))
     role_part = visual_spec.get("role_features", "")
     style_part = visual_spec.get("art_style", "")
 
-    # 🔸 统一风格锚：建议使用一种风格标签（比如“电影写实风格”或“日系动画风格”）
-    global_style_anchor = (
-        "画风统一要求：保持相同的镜头语言、色调、光影与人物造型风格。"
-        "所有分镜画面应属于同一作品世界观，不要在写实、动画、插画之间切换。"
-        "建议维持为：电影感写实风格，带有柔和光影、自然色调。"
-    )
-
-    scene_desc = sanitize_text(scene.get("description", ""))
-    title = sanitize_text(scene.get("title", ""))
-
     prompt = (
-        f"分镜标题：{title}\n"
-        f"分镜内容描述：{scene_desc}\n\n"
-        f"角色设定（必须遵守）：{role_part}\n\n"
-        f"画面风格（必须遵守）：{style_part}\n\n"
-        f"{global_style_anchor}\n\n"
-        "请生成单帧关键画面，中景/半身或全景由你判断最能叙事的构图，"
-        "要求清晰、细节丰富、主体完整，不要裁掉主要角色的头部或脸。"
+        f"{base_prompt}\n\n"
+        f"【分镜标题】{title}\n"
+        f"【画面描述】{scene_desc}\n\n"
+        f"【角色设定】{role_part}\n\n"
+        f"【风格设定】{style_part}\n"
     )
     return prompt
 
 
-
-# ================== 创建 DashScope 图像生成任务 ==================
-def qwen_create_task(prompt: str) -> str:
+def qwen_generate_image(prompt: str) -> List[str]:
+    """
+    使用 qwen-image-plus 模型同步生成图片
+    """
     headers = {
         "Authorization": f"Bearer {Config.QWEN_API_KEY}",
         "Content-Type": "application/json",
-        "X-DashScope-Async": "enable"
     }
 
     payload = {
-        "model": Config.QWEN_MODEL,  # 推荐 "wan2.2-t2i-plus"
-        "input": {"prompt": prompt},
+        "model": "qwen-image-plus",
+        "input": {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {"text": prompt}
+                    ]
+                }
+            ]
+        },
         "parameters": {
-            "size": Config.STORYBOARD_IMAGE_SIZE,
-            "n": Config.STORYBOARD_IMAGE_N,
+            "negative_prompt": "",
+            "prompt_extend": True,
+            "watermark": True,
+            "size": Config.STORYBOARD_IMAGE_SIZE or "1472×1140"
         }
     }
 
-    resp = requests.post(Config.QWEN_CREATE_URL, headers=headers, json=payload, timeout=180)
-    print(f"[创建任务] 状态码: {resp.status_code}, 返回: {resp.text[:300]}")
+    resp = requests.post(
+        "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation",
+        headers=headers,
+        json=payload,
+        timeout=180
+    )
+
+    print(f"[DashScope] 状态码: {resp.status_code}")
+    print(f"[DashScope] 返回: {resp.text[:500]}")
 
     if resp.status_code == 400 and "DataInspectionFailed" in resp.text:
         raise RuntimeError("DataInspectionFailed")
 
     resp.raise_for_status()
     data = resp.json()
-    task_id = data.get("output", {}).get("task_id")
 
-    if not task_id:
-        raise RuntimeError(f"创建任务失败，返回数据异常: {data}")
+    # 有些版本返回 base64，有些返回 url
+    urls = []
+    try:
+        # ✅ 新接口结构（choices → message → content → image）
+        if "output" in data and "choices" in data["output"]:
+            for choice in data["output"]["choices"]:
+                msg = choice.get("message", {})
+                contents = msg.get("content", [])
+                for c in contents:
+                    if "image" in c:
+                        urls.append(c["image"])
 
-    return task_id
+        # ✅ 兼容旧结构（results → url / b64_json）
+        elif "output" in data and "results" in data["output"]:
+            for item in data["output"]["results"]:
+                if "url" in item:
+                    urls.append(item["url"])
+                elif "b64_json" in item:
+                    import base64, uuid, os
+                    img_path = f"./outputs/{uuid.uuid4().hex}.png"
+                    os.makedirs("./outputs", exist_ok=True)
+                    with open(img_path, "wb") as f:
+                        f.write(base64.b64decode(item["b64_json"]))
+                    urls.append(img_path)
+
+    except Exception as e:
+        print(f"[解析返回异常] {e}")
+
+    print(f"[解析得到图片URL数量] {len(urls)}")
+    return urls
 
 
-# ================== 轮询任务结果 ==================
+
+
 def qwen_poll_task(task_id: str, timeout_sec: int) -> List[str]:
-    headers = {
-        "Authorization": f"Bearer {Config.QWEN_API_KEY}",
-        "Content-Type": "application/json",
-    }
+    headers = {"Authorization": f"Bearer {Config.QWEN_API_KEY}"}
     url = f"{Config.QWEN_FETCH_URL}/{task_id}"
 
-    start_time = time.time()
-    while time.time() - start_time < timeout_sec:
+    start = time.time()
+    while time.time() - start < timeout_sec:
         resp = requests.get(url, headers=headers, timeout=60)
-        print(f"[轮询] 状态码: {resp.status_code}, 返回: {resp.text[:300]}")
-
-        if resp.status_code == 400:
-            print(f"[DashScope] 任务 {task_id} 返回400，可能已过期或失败: {resp.text}")
-            time.sleep(5)
-            continue
-
         resp.raise_for_status()
         data = resp.json()
-        output = data.get("output", {})
-        status = output.get("task_status") or data.get("task_status")
-
+        status = data.get("output", {}).get("task_status")
         if status == "SUCCEEDED":
-            results = output.get("results", [])
-            urls = [r.get("url") for r in results if r.get("url")]
-            if not urls:
-                print(f"[DashScope] 成功但无URL: {data}")
-            return urls
-
+            results = data["output"]["results"]
+            return [r["url"] for r in results if "url" in r]
         elif status == "FAILED":
-            print(f"[DashScope] 任务失败: {data}")
-            raise RuntimeError(f"任务 {task_id} 执行失败")
-
-        elif status in ["PENDING", "RUNNING"]:
-            print(f"[DashScope] {task_id} 状态: {status}，继续轮询...")
-            time.sleep(5)
-            continue
-
-        else:
-            print(f"[DashScope] 未知状态 {status}，原始返回: {data}")
-            time.sleep(5)
-
-    raise TimeoutError(f"任务 {task_id} 超时未完成。")
+            raise RuntimeError("Task failed")
+        time.sleep(5)
+    raise TimeoutError(f"Task {task_id} timeout")
 
 
-# ================== 主入口：生成所有分镜 ==================
 def generate_storyboard_images(
     novel_text: str,
     scenes: List[Dict[str, Any]],
@@ -165,29 +160,29 @@ def generate_storyboard_images(
 
     for i, scene in enumerate(scenes, start=1):
         print(f"\n========== 开始生成第 {i}/{len(scenes)} 张图 ==========")
-        scene_prompt = build_image_prompt_for_scene(scene, visual_spec)
-        prompts_all.append(scene_prompt)
-
         try:
-            task_id = qwen_create_task(scene_prompt)
-            urls = qwen_poll_task(task_id, timeout_sec=Config.STORYBOARD_POLL_TIMEOUT_SEC)
-            images_all.extend(urls)
+            # 构造完整 prompt
+            scene_prompt = build_image_prompt_for_scene(scene, visual_spec)
+            prompts_all.append(scene_prompt)
+
+            urls = qwen_generate_image(scene_prompt)
+            images_all.append(urls)
             print(f"[成功] 第 {i} 张生成完成: {urls}")
 
         except RuntimeError as e:
+            print(f"[警告] {e}")
             if "DataInspectionFailed" in str(e):
-                print(f"[安全审查] 第 {i} 张触发审核，自动改写并重试生成...")
+                print(f"[安全改写重试] 第 {i} 张...")
                 safe_prompt = refine_scene_for_image(scene_prompt)
                 try:
-                    task_id = qwen_create_task(safe_prompt)
-                    urls = qwen_poll_task(task_id, timeout_sec=Config.STORYBOARD_POLL_TIMEOUT_SEC)
+                    urls = qwen_generate_image(safe_prompt)
                     images_all.extend(urls)
                     print(f"[重试成功] 第 {i} 张生成完成: {urls}")
                 except Exception as inner_e:
-                    print(f"[重试失败] 第 {i} 张依然出错: {inner_e}")
+                    print(f"[重试失败] {inner_e}")
                     images_all.append("")
             else:
-                print(f"[错误] 第 {i} 张生成失败: {e}")
                 images_all.append("")
 
     return {"images": images_all, "prompts": prompts_all}
+

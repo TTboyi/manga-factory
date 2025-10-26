@@ -1,0 +1,32 @@
+# === 忽略 README 文件（不论大小写） ===
+README
+README.*
+readme
+readme.*
+
+# === 忽略文档目录 ===
+doc/
+docs/
+
+# === 忽略后端 prompts 目录 ===
+backend/prompts/
+
+# === 常规可选补充（建议保留） ===
+
+# Python 缓存与虚拟环境
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+
+# Node 模块与打包产物
+node_modules/
+dist/
+build/
+
+# 系统与临时文件
+.DS_Store
+Thumbs.db
+*.log
+*.tmp

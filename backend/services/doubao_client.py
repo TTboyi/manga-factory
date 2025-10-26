@@ -2,14 +2,12 @@ import requests
 from typing import List, Dict, Any
 from config import Config
 
-
 def call_doubao(model: str, messages: List[Dict[str, Any]], max_tokens: int = 4096) -> str:
     """
-    直接调用火山方舟 Chat Completions API，返回 assistant 的content字符串。
-    不做偷偷简化：
-    - 支持system / user / assistant多轮
-    - 传thinking.enabled
-    - 我们强制要求文本输出（不做流式）
+    调用火山方舟豆包 Chat Completions API
+    - 支持完整的 system / user / assistant 多轮
+    - 自动启用 thinking.enabled
+    - 全量返回文本（非流式）
     """
     headers = {
         "Content-Type": "application/json",
@@ -29,7 +27,6 @@ def call_doubao(model: str, messages: List[Dict[str, Any]], max_tokens: int = 40
     resp.raise_for_status()
     data = resp.json()
 
-    # data["choices"][0]["message"]["content"]
     try:
         return data["choices"][0]["message"]["content"]
     except Exception as e:

@@ -3,23 +3,16 @@ from services.storyboard_service import generate_storyboard_images
 
 image_bp = Blueprint("image_bp", __name__, url_prefix="/image")
 
-
 @image_bp.route("/generate_storyboard", methods=["POST"])
 def generate_storyboard():
     """
-    Body:
+    输入：
     {
       "novel_text": "...",
-      "scenes": [ {id,title,description}, ... ],
-      "visual_spec": {
-         "role_features": "...",
-         "art_style": "...",
-         "reference_images": [...],
-         ...
-      }
+      "scenes": [...],
+      "visual_spec": {...}
     }
-
-    Return:
+    输出：
     {
       "images": [...],
       "prompts": [...]
@@ -30,9 +23,12 @@ def generate_storyboard():
     scenes = data.get("scenes", [])
     visual_spec = data.get("visual_spec", {})
 
+    if not scenes:
+        return jsonify({"error": "no scenes provided"}), 400
+
     result = generate_storyboard_images(
         novel_text=novel_text,
         scenes=scenes,
-        visual_spec=visual_spec,
+        visual_spec=visual_spec
     )
     return jsonify(result)

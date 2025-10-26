@@ -36,10 +36,10 @@ class Config:
     QWEN_API_KEY = os.getenv("DASHSCOPE_API_KEY", "")
     QWEN_CREATE_URL = "https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis"
     QWEN_FETCH_URL = "https://dashscope.aliyuncs.com/api/v1/tasks"
-    QWEN_MODEL = "wan2.2-t2i-plus"  # 你指定的模型
+    QWEN_MODEL = "qwen-image"  # 你指定的模型
 
     # 出图分辨率
-    STORYBOARD_IMAGE_SIZE = "1024*1024"
+    STORYBOARD_IMAGE_SIZE = "1472*1140"
     STORYBOARD_IMAGE_N = 1
 
     # 允许我们后续做异步轮询时的最大等待秒数等（这里先留）

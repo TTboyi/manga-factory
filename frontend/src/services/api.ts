@@ -61,123 +61,68 @@ export const authApi = {
  * 上传小说文本 → 调用豆包生成规范小说 + 场景识别
  * 对应后端 POST /api/text/generate_novel
  */
-export const uploadNovel = async (
-  text: string
-): Promise<{ novel_text: string; scenes: Scene[] }> => {
-  const res = await apiClient.post("/text/generate_novel", { text });
+const api = axios.create({
+  baseURL: "http://localhost:5000", // 后端 Flask 根地址，无 /api 前缀
+  timeout: 600000, // 10分钟，避免生成图像之类的长任务直接超时
+});
+
+// ========== STEP1: 小说生成 ==========
+// 传入：用户输入的小说全文/大纲
+// 返回：{ novel_text: string }
+export async function generateNovel(text: string): Promise<{
+  novel_text: string;
+}> {
+  const res = await api.post("/text/generate_novel", { text });
   return res.data;
-};
+}
 
-
-/**
- * 上传小说文件(txt/doc/docx) → 调用豆包生成小说 + 场景识别
- * 对应后端 POST /api/text/upload
- */
-export const uploadNovelFile = async (file: File): Promise<{ novel_text: string; scenes: Scene[] }> => {
-  const formData = new FormData();
-  formData.append("file", file);
-  const res = await axios.post(`${API_BASE}/text/upload`, formData, {
+// ========== STEP2: 视觉分析 ==========
+// 上传角色描述、风格描述、可选图片和小说全文
+// 返回：visual_spec 对象（role_features、art_style等）
+export async function analyzeVisualSpec(formData: FormData): Promise<any> {
+  const res = await api.post("/visual/analyze", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return res.data;
-};
+}
 
-/**
- * 场景识别接口（独立使用）
- * 对应后端 POST /api/text/scene_recognition
- */
-export const extractScenes = async (novelText: string): Promise<{ scenes: Scene[] }> => {
-  const res = await apiClient.post("/text/scene_recognition", { text: novelText });
+// ========== STEP3: 场景识别（会在第3步组件里用到，先导出） ==========
+export async function recognizeScenes(payload: {
+  novel_text: string;
+  visual_spec: any;
+  num_shots?: number;
+}): Promise<{ scenes: any[] }> {
+  const res = await api.post("/scene/recognize", payload);
   return res.data;
-};
+}
 
-// ========== 视觉规范 ==========
-
-/**
- * 分析视觉规范（角色特征 + 画面风格）
- * 对应后端 POST /api/visual/analyze
- */
-export const analyzeVisualSpec = async (
-  roleText: string,
-  styleText: string,
-  novelText?: string,
-  roleFile?: File,
-  styleFile?: File
-): Promise<VisualSpec> => {
-  const formData = new FormData();
-  formData.append("role_text", roleText);
-  formData.append("style_text", styleText);
-  if (novelText) formData.append("novel_text", novelText);
-  if (roleFile) formData.append("role_image", roleFile);
-  if (styleFile) formData.append("style_image", styleFile);
-
-  const res = await axios.post(`${API_BASE}/visual/analyze`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+// ========== STEP3.5: 出图（第3步用） ==========
+export async function generateStoryboard(payload: {
+  novel_text: string;
+  scenes: any[];
+  visual_spec: any;
+}): Promise<{ images: string[]; prompts?: string[] }> {
+  const res = await api.post("/image/generate_storyboard", payload);
   return res.data;
-};
+}
 
-// ========== 分镜生成（出图） ==========
-
-/**
- * 根据小说+场景+视觉规范生成分镜图像
- * 对应后端 POST /api/image/generate_storyboard
- */
-export const generateStoryboard = async (
-  novelText: string,
-  scenes: Scene[],
-  visualSpec: VisualSpec
-): Promise<ImageGenResponse> => {
-  const res = await apiClient.post("/image/generate_storyboard", {
-    novel_text: novelText,
-    scenes,
-    visual_spec: visualSpec,
-  });
-  return res.data;
-};
-
-// ========== 项目管理 ==========
-
-/**
- * 保存项目进度（任意阶段）
- * 对应后端 POST /api/project/save
- */
-export const saveProject = async (data: {
+// ========== STEP4: 保存（第4步用） ==========
+export async function saveProject(payload: {
   id?: number;
   name: string;
   novel_text?: string;
-  scenes?: Scene[];
-  visual_spec?: VisualSpec;
+  scenes?: any[];
+  visual_spec?: any;
   images?: string[];
-}): Promise<{ success: boolean; project_id: number }> => {
-  const res = await apiClient.post("/project/save", data);
+}): Promise<{ success: boolean; project_id: number }> {
+  const res = await api.post("/project/save", payload);
   return res.data;
-};
+}
 
-/**
- * 获取完整项目详情
- * 对应后端 GET /api/project/get_full/<id>
- */
-export const getFullProject = async (id: number) => {
-  const res = await apiClient.get(`/project/get_full/${id}`);
+export async function getProjectFull(id: number) {
+  const res = await api.get(`/project/get_full/${id}`);
   return res.data;
-};
-
-// ========== 系统健康检查 ==========
-
-/**
- * 检查后端是否在线
- * 对应后端 GET /api/health
- */
-export const checkHealth = async (): Promise<{ ok: boolean }> => {
-  const res = await apiClient.get("/health");
-  return res.data;
-};
-
-
-
-
-
+}
 
 
 

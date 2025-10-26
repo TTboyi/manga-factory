@@ -6,6 +6,7 @@ from routes.auth import auth_bp
 #from routes.scene import scene_bp
 from routes.captcha import captcha_bp
 from routes.text_routes import text_bp
+from routes.scene_routes import scene_bp
 from routes.visual_routes import visual_bp
 from routes.image_routes import image_bp
 from routes.project_routes import project_bp
@@ -66,6 +67,7 @@ def create_app():
     app.register_blueprint(visual_bp)
     app.register_blueprint(image_bp)
     app.register_blueprint(project_bp)
+    app.register_blueprint(scene_bp)
 
     @app.route("/api/health", methods=["GET"])
     def health():
