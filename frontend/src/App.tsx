@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LandingPage, HomePage ,Login, CaptchaLogin ,Register} from "./pages";
+import { LandingPage, HomePage ,Login, CaptchaLogin ,Register,Center} from "./pages";
 import Chat from "./pages/Chat";
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/captcha-login" element={<CaptchaLogin />} />
         <Route path="/chat" element={<Chat />} />
-
+        <Route path="/center" element={<Center />} />
       </Routes>
     </BrowserRouter>
   );
