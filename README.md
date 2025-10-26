@@ -47,8 +47,29 @@
       <td><img src="doc/etc_png/image10.png" alt="image10" width="200"></td>
     </tr>
     </table>
-    <p style="font-weight: bold; margin-bottom: 10px;">生成图片示例</p>
+    <p style="font-weight: bold; margin-bottom: 10px;">图片生成示例1</p>
 </div>
+
+<div style="text-align: center;">
+    <table style="margin: 0 auto;">
+    <tr>
+      <td><img src="doc/etc_png/001.png" alt="image01" width="200"></td>
+      <td><img src="doc/etc_png/002.png" alt="image02" width="200"></td>
+      <td><img src="doc/etc_png/003.png" alt="image03" width="200"></td>
+      <td><img src="doc/etc_png/004.png" alt="image04" width="200"></td>
+      <td><img src="doc/etc_png/005.png" alt="image05" width="200"></td>
+    </tr>
+    <tr>
+      <td><img src="doc/etc_png/006.png" alt="image06" width="200"></td>
+      <td><img src="doc/etc_png/007.png" alt="image07" width="200"></td>
+      <td><img src="doc/etc_png/008.png" alt="image08" width="200"></td>
+      <td><img src="doc/etc_png/009.png" alt="image09" width="200"></td>
+      <td><img src="doc/etc_png/010.png" alt="image10" width="200"></td>
+    </tr>
+    </table>
+    <p style="font-weight: bold; margin-bottom: 10px;">图片生成示例2</p>
+</div>
+
 
 ## 🏗️ 技术架构
 
@@ -356,4 +377,5 @@ VOLCENGINE_SERVICE_ID=your_service_id
 - 项目主页: https://github.com/TTboyi/manga-factory
 - 邮箱: your-email@example.com
 - 官方网站: https://manga-factory.com
+
 
