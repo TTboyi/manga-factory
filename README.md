@@ -1,9 +1,18 @@
 
 # manga-factory
 
-![Manga Factory](https://img.shields.io/badge/Version-1.0.0-blue.svg)
+![Manga Factory](https://img.shields.io/badge/Version-1.1.0-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)
+
+![Flask](https://img.shields.io/badge/Flask-2.3.3-yellow.svg)
+![React](https://img.shields.io/badge/React-19.1.1-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue.svg)
+![Vite](https://img.shields.io/badge/Vite-7.1.7-green.svg)
+
+
+
+
 
 一个基于AIGC技术的智能漫画生成系统，能够将小说文本自动转换为高质量的漫画作品。本项目融合了大型语言模型(LLM)和文生图(Text-to-Image)技术，为创作者提供高效、便捷的漫画创作工具。
 
@@ -11,12 +20,35 @@
 
 - 📚 **智能文本理解**：基于大型语言模型深度解析小说内容，理解情节、人物、情感和场景
 - 🎬 **自动分镜生成**：智能将文本转换为漫画分镜设计，包括画面构图、角色动作和镜头语言
-- 🎨 **风格一致性**：支持多种漫画风格选择，并确保整部作品的画风和角色形象保持统一
+- 🎨 **风格一致性**：支持自定义漫画风格选择，并确保整部作品的画风和角色形象保持统一
 - 🖼️ **高质量图像生成**：利用先进的文生图模型生成精美漫画画面
-- 💬 **智能文本气泡**：自动识别画面留白区域，合理放置对话和旁白文本
+- 💬 **智能文本气泡**：自动识别分镜对话，合理放置对话和旁白文本
 - 📖 **多样化排版**：支持多种漫画页面布局模板，如四格、六格等
-- 🚀 **高效异步处理**：采用任务队列技术，处理大型文本时不阻塞用户界面
 - 🌐 **前后端分离**：采用现代Web架构，提供友好的用户界面和强大的后端服务
+
+
+
+
+
+<div style="text-align: center;">
+    <table style="margin: 0 auto;">
+    <tr>
+      <td><img src="doc/etc_png/image01.png" alt="image01" width="200"></td>
+      <td><img src="doc/etc_png/image02.png" alt="image02" width="200"></td>
+      <td><img src="doc/etc_png/image03.png" alt="image03" width="200"></td>
+      <td><img src="doc/etc_png/image04.png" alt="image04" width="200"></td>
+      <td><img src="doc/etc_png/image05.png" alt="image05" width="200"></td>
+    </tr>
+    <tr>
+      <td><img src="doc/etc_png/image06.png" alt="image06" width="200"></td>
+      <td><img src="doc/etc_png/image07.png" alt="image07" width="200"></td>
+      <td><img src="doc/etc_png/image08.png" alt="image08" width="200"></td>
+      <td><img src="doc/etc_png/image09.png" alt="image09" width="200"></td>
+      <td><img src="doc/etc_png/image10.png" alt="image10" width="200"></td>
+    </tr>
+    </table>
+    <p style="font-weight: bold; margin-bottom: 10px;">生成图片示例</p>
+</div>
 
 ## 🏗️ 技术架构
 
@@ -24,11 +56,11 @@
 
 | 组件 | 技术选型 | 主要职责 |
 | :--- | :--- | :--- |
-| **前端 (Frontend)** | React / Vue.js | 提供用户交互界面，包括文本输入、风格选择、漫画预览与下载 |
-| **后端 (Backend)** | Python (FastAPI) | 处理核心业务逻辑，包括文本处理、与AIGC服务交互、任务管理 |
-| **AIGC服务** | 火山引擎AIGC | 提供底层的LLM（Doubao）、文生图（seedream 4.0）和TTS能力 |
-| **数据库** | PostgreSQL | 存储用户信息、项目文件、生成的漫画数据、角色设定等 |
-| **任务队列** | Celery & Redis | 管理耗时的AIGC生成任务，实现异步处理，避免请求超时 |
+| **前端 (Frontend)** | React 19.1.1 + TypeScript + Vite + Ant Design | 提供用户交互界面，包括文本输入、风格选择、漫画预览与下载 |
+| **后端 (Backend)** | Python 3.8+ (Flask 2.3.3) | 处理核心业务逻辑，包括文本处理、与AIGC服务交互、任务管理 |
+| **AIGC服务** | 火山引擎/阿里云 AIGC | 提供底层的LLM（Doubao）、文生图（qwen_image）能力 |
+| **数据库** | SQLite + SQLAlchemy | 存储用户信息、项目文件、生成的漫画数据、角色设定等 |
+| **任务队列** | Redis | 管理耗时的AIGC生成任务，实现异步处理，避免请求超时 |
 
 ### 系统工作流程
 
@@ -40,14 +72,29 @@
 6. **页面合成**：按照预设布局将分镜组合成完整漫画页面
 7. **输出与分享**：提供在线预览和多种格式的导出功能
 
+<div style="text-align: center;">
+    <table style="margin: 0 auto;">
+    <tr>
+      <td><img src="doc/flowchart/png/get_text.png" alt="get_text" width="500"></td>
+    </tr>
+    <tr>
+      <td><img src="doc/flowchart/png/get_role_art.png" alt="get_role_art" width="500"></td>
+    </tr>
+    <tr>
+      <td><img src="doc/flowchart/png/get_img.jpg" alt="get_img" width="500"></td>
+    </tr>
+  </table>
+  <p style="font-weight: bold; margin-bottom: 10px;">工作流结构组成示意图</p>
+</div>
+
 ## 📦 安装指南
 
 ### 环境要求
 
 - Python 3.8+
 - Node.js 14+
-- PostgreSQL 12+
-- Redis 6+
+- Redis 6+ (可选，用于缓存和任务队列)
+- npm 7+ (用于前端依赖管理)
 
 ### 快速安装
 
@@ -57,31 +104,67 @@
    cd manga-factory
    ```
 
-2. **后端安装**
+2. **创建虚拟环境**
+   ```bash
+   # 在项目根目录下创建虚拟环境
+   python -m venv venv
+   
+   # 激活虚拟环境
+   # Windows:
+   venv\Scripts\activate
+   # macOS/Linux:
+   source venv/bin/activate
+   ```
+
+3. **后端安装**
    ```bash
    cd backend
    pip install -r requirements.txt
    ```
 
-3. **前端安装**
+4. **前端安装**
    ```bash
    cd frontend
    npm install
    ```
 
-4. **环境配置**
+   前端主要依赖包括：
+   - React 19.1.1
+   - TypeScript
+   - Vite 7.1.7
+   - Ant Design 5.27.6
+   - Tailwind CSS 4.1.15
+   - React Router DOM 7.9.4
+   - Axios 1.12.2
+
+   后端主要依赖包括：
+   - Flask 2.3.3
+   - Flask-CORS 4.0.0
+   - Flask-SQLAlchemy 3.0.5
+   - PyMySQL 1.1.0
+   - volcengine-python-sdk 1.0.50
+   - python-dotenv 1.0.0
+   - requests 2.31.0
+
+5. **环境配置**
    ```bash
    cp .env.example .env
-   # 编辑 .env 文件，填入必要的API密钥和数据库配置
+   # 编辑 .env 文件，填入必要的配置
    ```
-
-5. **数据库初始化**
-   ```bash
-   # 使用PostgreSQL创建数据库
-   createdb manga_factory
    
-   # 运行数据库迁移
-   python backend/database/migrations.py
+   环境变量说明：
+   - `SECRET_KEY`: 应用程序密钥，用于会话加密（默认值：supersecretkey）
+   - `JWT_SECRET_KEY`: JWT令牌密钥，用于身份验证（默认值：jwt-secret）
+   - `SQLALCHEMY_DATABASE_URI`: 数据库连接字符串（默认值：sqlite:///app.db）
+   - `REDIS_URL`: Redis连接字符串（默认值：redis://localhost:6379/0）
+   
+   注意：生产环境中请务必修改默认密钥值，使用强密码。
+
+6. **数据库初始化**
+   ```bash
+   # 运行数据库初始化
+   cd backend
+   python init_db.py
    ```
 
 ### Docker部署
@@ -97,25 +180,21 @@ docker-compose up -d
 
 1. **启动后端服务**
    ```bash
+   # 确保虚拟环境已激活
    cd backend
-   python main.py
+   python app.py
    ```
 
 2. **启动前端服务**
    ```bash
    cd frontend
-   npm start
+   npm run dev
    ```
 
 3. **访问应用**
-   打开浏览器访问 `http://localhost:3000`
+   打开浏览器访问 `http://localhost:5173`
 
-### 命令行使用
 
-```bash
-# 使用命令行工具快速生成漫画
-python backend/cli.py --input examples/sample_novel.txt --style anime --output ./my_manga/
-```
 
 ## 📖 使用指南
 
@@ -127,42 +206,83 @@ python backend/cli.py --input examples/sample_novel.txt --style anime --output .
 4. **预览与编辑**：查看生成的漫画，可对分镜进行微调
 5. **导出分享**：选择导出格式（PDF、图片集等）保存或分享作品
 
-### API使用
 
-```python
-import requests
-
-# 提交生成任务
-response = requests.post('http://localhost:8000/api/generate', json={
-    'text': '你的小说文本',
-    'style': 'anime',
-    'character_descriptions': {
-        '主角': '黑发蓝眼，白色T恤，牛仔裤'
-    }
-})
-
-task_id = response.json()['task_id']
-
-# 查询任务状态
-status = requests.get(f'http://localhost:8000/api/status/{task_id}')
-```
 
 ## 🎨 漫画风格示例
 
 | 风格名称 | 示例图片 | 描述 |
 | :--- | :--- | :--- |
-| **日漫风格** | ![Anime Style](docs/images/anime_style.jpg) | 经典日本动漫风格，线条简洁，色彩鲜明 |
-| **美漫风格** | ![American Style](docs/images/american_style.jpg) | 美式漫画风格，线条粗犷，色彩浓郁 |
-| **写实风格** | ![Realistic Style](docs/images/realistic_style.jpg) | 接近真实世界的绘画风格，细节丰富 |
-| **Q版风格** | ![Chibi Style](docs/images/chibi_style.jpg) | 可爱Q版风格，角色比例夸张，表情丰富 |
+| **日漫风格** | <img src="doc/images/anime_style.png" alt="Anime Style" width="100"> | 经典日本动漫风格，线条简洁，色彩鲜明 |
+| **美漫风格** | <img src="doc/images/american_style.png" alt="American Style" width="100"> | 美式漫画风格，线条粗犷，色彩浓郁 |
+| **写实风格** | <img src="doc/images/realistic_style.png" alt="Realistic Style" width="100"> | 接近真实世界的绘画风格，细节丰富 |
+| **Q版风格** | <img src="doc/images/chibi_style.png" alt="Chibi Style" width="100"> | 可爱Q版风格，角色比例夸张，表情丰富 |
+
+## 📁 项目结构
+
+```
+manga-factory/
+├── backend/                 # 后端Flask应用
+│   ├── app.py              # 主应用入口
+│   ├── config.py           # 配置文件
+│   ├── models.py           # 数据模型
+│   ├── extensions.py       # Flask扩展初始化
+│   ├── init_db.py          # 数据库初始化脚本
+│   ├── middlewares/        # 中间件
+│   │   └── auth_required.py
+│   ├── routes/             # 路由
+│   │   ├── auth.py         # 认证相关路由
+│   │   └── captcha.py      # 验证码路由
+│   ├── services/           # 业务服务
+│   │   └── doubao_service.py # 豆包AI服务
+│   └── utils/              # 工具函数
+│       ├── crypto_utils.py
+│       ├── email_utils.py
+│       ├── jwt_utils.py
+│       └── response_utils.py
+├── frontend/               # 前端React应用
+│   ├── src/
+│   │   ├── components/     # 组件
+│   │   ├── pages/          # 页面
+│   │   │   ├── LandingPage.tsx
+│   │   │   ├── Login.tsx
+│   │   │   ├── Register.tsx
+│   │   │   ├── Chat.tsx
+│   │   │   └── ...
+│   │   ├── services/       # API服务
+│   │   ├── utils/          # 工具函数
+│   │   └── types/          # TypeScript类型定义
+│   └── package.json
+└── doc/                    # 文档
+    ├── prompt/             # AI提示词模板
+    ├── images/             # 图片资源
+    └── ...
+```
 
 ## 📚 项目文档
 
 - [需求文档](doc/小说生成漫画应用_-_需求文档.md) - 详细的产品需求和用户分析
 - [实现方案](doc/小说生成漫画应用_-_产品实现方案.md) - 技术架构和实现细节
-- [API文档](docs/api.md) - 完整的API接口说明
-- [开发指南](docs/development.md) - 开发环境搭建和贡献指南
-- [常见问题](docs/faq.md) - 常见问题解答
+- [AI提示词模板](doc/prompt/) - 各种AI生成任务的提示词模板
+
+## 🔧 核心功能
+
+### 用户认证系统
+- 用户注册与登录
+- JWT令牌认证
+- 验证码验证
+- 密码加密存储
+
+### AI生成功能
+- **智能分镜**：AI自动分析小说情节，拆分为连贯的漫画分镜布局
+- **角色生成**：根据文字描述创建个性化角色形象
+- **场景生成**：根据小说描述生成漫画场景
+- **对话气泡**：智能分配对话气泡位置
+
+### 用户界面
+- 响应式设计，支持多设备访问
+- 直观的用户交互界面
+- 实时预览生成的漫画
+- 多种漫画风格选择
 
 ## 🤝 贡献指南
 
@@ -174,7 +294,7 @@ status = requests.get(f'http://localhost:8000/api/status/{task_id}')
 2. **创建你的特性分支** (`git checkout -b feature/AmazingFeature`)
 3. **提交你的更改** (`git commit -m 'Add some AmazingFeature'`)
 4. **推送到分支** (`git push origin feature/AmazingFeature`)
-5. **开启一个 Pull Request**
+5. **开启一个 Pull Request`
 
 ### 开发规范
 
@@ -183,22 +303,49 @@ status = requests.get(f'http://localhost:8000/api/status/{task_id}')
 - 为新功能添加适当的测试
 - 更新相关文档
 
+### 环境变量配置
+
+在backend目录下创建.env文件，配置以下环境变量：
+```
+# 数据库配置
+DATABASE_URL=sqlite:///manga_factory.db
+
+# JWT配置
+JWT_SECRET_KEY=your_secret_key_here
+JWT_ACCESS_TOKEN_EXPIRES=3600
+
+# Redis配置（可选）
+REDIS_URL=redis://localhost:6379/0
+
+# 火山引擎配置
+VOLCENGINE_ACCESS_KEY=your_access_key
+VOLCENGINE_SECRET_KEY=your_secret_key
+VOLCENGINE_REGION=cn-beijing
+VOLCENGINE_SERVICE_ID=your_service_id
+```
+
 ## 🐛 问题反馈
 
-如果你发现了任何问题或有功能建议，请通过以下方式反馈：
+如果您在使用过程中遇到任何问题，请通过以下方式反馈：
 
-- [提交Issue](https://github.com/your-username/manga-factory/issues)
-- [讨论区](https://github.com/your-username/manga-factory/discussions)
+- [提交Issue](https://github.com/yourusername/manga-factory/issues)
+- 发送邮件至：your.email@example.com
 
 ## 📄 许可证
 
-本项目采用 [MIT 许可证](LICENSE) - 查看LICENSE文件了解详情
+本项目采用 [MIT 许可证](LICENSE)。
 
 ## 🙏 致谢
 
-- 感谢所有为本项目做出贡献的开发者
-- 感谢火山引擎AIGC提供的技术支持
-- 感谢开源社区提供的优秀工具和框架
+感谢以下开源项目和服务：
+
+- [Flask](https://flask.palletsprojects.com/) - 轻量级Web框架
+- [React](https://reactjs.org/) - 用户界面构建库
+- [SQLite](https://www.sqlite.org/) - 轻量级数据库
+- [Redis](https://redis.io/) - 内存数据结构存储
+- [火山引擎](https://www.volcengine.com/) - 提供AIGC服务支持
+- [Tailwind CSS](https://tailwindcss.com/) - 实用优先的CSS框架
+- [Ant Design](https://ant.design/) - 企业级UI设计语言
 
 ## 🌟 Star History
 
@@ -206,10 +353,7 @@ status = requests.get(f'http://localhost:8000/api/status/{task_id}')
 
 ## 📧 联系我们
 
-- 项目主页: https://github.com/your-username/manga-factory
+- 项目主页: https://github.com/TTboyi/manga-factory
 - 邮箱: your-email@example.com
-- 官方网站: https://manga-factory.example.com
-<<<<<<< HEAD
-=======
->>>>>>> 848992664752b919b0ae99a31ab4f1490ba92f98
->>>>>>> 6cda5130388c11f863af8045f74f92db850569be
+- 官方网站: https://manga-factory.com
+

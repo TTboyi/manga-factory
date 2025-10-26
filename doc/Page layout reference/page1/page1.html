@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Factory - 漫画工厂</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-palette"></i>
+                <span>Manga Factory</span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li class="active"><a href="#"><i class="fas fa-home"></i> 工作台</a></li>
+                    <li><a href="#"><i class="fas fa-folder"></i> 项目</a></li>
+                    <li><a href="#"><i class="fas fa-images"></i> 作品库</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> 设置</a></li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="avatar"></div>
+                <span>用户</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="app-main">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>创作流程</h3>
+            </div>
+            <div class="workflow-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>输入文本</h4>
+                        <p>上传或输入小说内容</p>
+                    </div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>角色设定</h4>
+                        <p>定义角色特征和风格</p>
+                    </div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>生成预览</h4>
+                        <p>查看生成的漫画效果</p>
+                    </div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>导出作品</h4>
+                        <p>保存或分享你的创作</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 内容区域 -->
+        <div class="content-area">
+            <!-- 步骤1: 输入文本 -->
+            <section class="content-section active" id="step-1">
+                <div class="section-header">
+                    <h2>输入小说文本</h2>
+                    <p>上传文本文件或直接粘贴内容，我们将基于此生成漫画</p>
+                </div>
+                <div class="card-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-keyboard"></i> 文本输入</h3>
+                            <div class="card-actions">
+                                <button class="btn-icon"><i class="fas fa-expand"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <textarea placeholder="直接粘贴小说内容到这里..." rows="10"></textarea>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-file-upload"></i> 文件上传</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="file-upload-area">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <p>点击或拖拽文件到此处上传</p>
+                                <p class="upload-hint">支持格式: TXT, DOC, DOCX (最大 500MB)</p>
+                                <input type="file" id="file-input" class="file-input" accept=".txt,.doc,.docx">
+                            </div>
+                            <div class="file-list">
+                                <div class="file-item">
+                                    <div class="file-info">
+                                        <i class="fas fa-file-alt"></i>
+                                        <span>未选择文件</span>
+                                    </div>
+                                    <div class="file-actions">
+                                        <button class="btn-icon"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-primary" id="next-step-1">下一步: 角色设定 <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </section>
+
+            <!-- 步骤2: 角色设定 -->
+            <section class="content-section" id="step-2">
+                <div class="section-header">
+                    <h2>角色与风格设定</h2>
+                    <p>定义角色特征和画面风格，让漫画更符合你的想象</p>
+                </div>
+                <div class="card-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-user"></i> 角色特征</h3>
+                        </div>
+                        <div class="card-body">
+                            <textarea placeholder="描述角色的外观、性格、服装等特征..." rows="6"></textarea>
+                            <div class="file-upload-area small">
+                                <div class="upload-icon">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <p>上传角色参考图片</p>
+                                <input type="file" class="file-input" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-paint-brush"></i> 画面风格</h3>
+                        </div>
+                        <div class="card-body">
+                            <textarea placeholder="描述你想要的画面风格，如日式、美式、水彩、素描等..." rows="6"></textarea>
+                            <div class="file-upload-area small">
+                                <div class="upload-icon">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <p>上传风格参考图片</p>
+                                <input type="file" class="file-input" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-outline" id="prev-step-2"><i class="fas fa-arrow-left"></i> 上一步</button>
+                    <button class="btn btn-primary" id="next-step-2">下一步: 生成预览 <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </section>
+
+            <!-- 步骤3: 生成预览 -->
+            <section class="content-section" id="step-3">
+                <div class="section-header">
+                    <h2>漫画预览</h2>
+                    <p>查看生成的漫画效果，可以进行调整或重新生成</p>
+                </div>
+                <div class="preview-container">
+                    <div class="preview-toolbar">
+                        <div class="toolbar-group">
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-redo"></i> 重新生成</button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-sliders-h"></i> 调整参数</button>
+                        </div>
+                        <div class="toolbar-group">
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-search-minus"></i></button>
+                            <span class="zoom-level">100%</span>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-search-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-images"></i>
+                            <p>漫画预览区域</p>
+                            <p class="placeholder-text">点击"生成漫画"按钮开始创作</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-outline" id="prev-step-3"><i class="fas fa-arrow-left"></i> 上一步</button>
+                    <button class="btn btn-success" id="generate-manga"><i class="fas fa-magic"></i> 生成漫画</button>
+                    <button class="btn btn-primary" id="next-step-3">下一步: 导出作品 <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </section>
+
+            <!-- 步骤4: 导出作品 -->
+            <section class="content-section" id="step-4">
+                <div class="section-header">
+                    <h2>导出作品</h2>
+                    <p>选择导出格式和保存位置，完成你的漫画创作</p>
+                </div>
+                <div class="export-container">
+                    <div class="export-options">
+                        <div class="option-card">
+                            <div class="option-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h3>PDF 格式</h3>
+                            <p>适合打印和分享</p>
+                            <button class="btn btn-outline">导出 PDF</button>
+                        </div>
+                        <div class="option-card">
+                            <div class="option-icon">
+                                <i class="fas fa-file-image"></i>
+                            </div>
+                            <h3>图片格式</h3>
+                            <p>PNG, JPG 等格式</p>
+                            <button class="btn btn-outline">导出图片</button>
+                        </div>
+                        <div class="option-card">
+                            <div class="option-icon">
+                                <i class="fas fa-share-alt"></i>
+                            </div>
+                            <h3>在线分享</h3>
+                            <p>生成分享链接</p>
+                            <button class="btn btn-outline">创建链接</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-outline" id="prev-step-4"><i class="fas fa-arrow-left"></i> 上一步</button>
+                    <button class="btn btn-success" id="finish-project"><i class="fas fa-check"></i> 完成项目</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- 右侧面板 -->
+        <aside class="right-panel">
+            <div class="panel-tabs">
+                <button class="tab-btn active" data-tab="history"><i class="fas fa-history"></i> 历史记录</button>
+                <button class="tab-btn" data-tab="templates"><i class="fas fa-th-large"></i> 模板</button>
+                <button class="tab-btn" data-tab="help"><i class="fas fa-question-circle"></i> 帮助</button>
+            </div>
+            <div class="panel-content">
+                <div class="tab-content active" id="history-tab">
+                    <h4>最近项目</h4>
+                    <div class="history-list">
+                        <div class="history-item">
+                            <div class="history-thumbnail"></div>
+                            <div class="history-info">
+                                <h5>项目名称</h5>
+                                <p>2023-05-15 14:30</p>
+                            </div>
+                        </div>
+                        <div class="history-item">
+                            <div class="history-thumbnail"></div>
+                            <div class="history-info">
+                                <h5>项目名称</h5>
+                                <p>2023-05-14 10:15</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="templates-tab">
+                    <h4>模板库</h4>
+                    <div class="template-grid">
+                        <div class="template-item">
+                            <div class="template-thumbnail"></div>
+                            <p>日式漫画</p>
+                        </div>
+                        <div class="template-item">
+                            <div class="template-thumbnail"></div>
+                            <p>美式漫画</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-content" id="help-tab">
+                    <h4>快速帮助</h4>
+                    <div class="help-links">
+                        <a href="#"><i class="fas fa-book"></i> 使用指南</a>
+                        <a href="#"><i class="fas fa-video"></i> 视频教程</a>
+                        <a href="#"><i class="fas fa-comments"></i> 社区支持</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- 浮动操作按钮 -->
+    <div class="fab-container">
+        <button class="fab" id="fab-main">
+            <i class="fas fa-plus"></i>
+        </button>
+        <div class="fab-options">
+            <button class="fab-option" title="新建项目">
+                <i class="fas fa-file"></i>
+            </button>
+            <button class="fab-option" title="导入项目">
+                <i class="fas fa-file-import"></i>
+            </button>
+            <button class="fab-option" title="保存草稿">
+                <i class="fas fa-save"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
