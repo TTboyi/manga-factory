@@ -44,7 +44,7 @@
       <td><img src="doc/etc_png/image07.png" alt="image07" width="200"></td>
       <td><img src="doc/etc_png/image08.png" alt="image08" width="200"></td>
       <td><img src="doc/etc_png/image09.png" alt="image09" width="200"></td>
-      <td><img src="doc/etc_png/image10.png" alt="image10" width="200"></td>
+      <td><img src="doc/etc_png/image.png" alt="image10" width="200"></td>
     </tr>
     </table>
     <p style="font-weight: bold; margin-bottom: 10px;">图片生成示例1</p>
@@ -377,5 +377,6 @@ VOLCENGINE_SERVICE_ID=your_service_id
 - 项目主页: https://github.com/TTboyi/manga-factory
 - 邮箱: your-email@example.com
 - 官方网站: https://manga-factory.com
+
 
 
