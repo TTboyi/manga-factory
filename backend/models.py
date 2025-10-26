@@ -33,6 +33,8 @@ class Project(db.Model):
         onupdate=datetime.utcnow,
         server_onupdate=func.now()
     )
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    #user = db.relationship("User", back_populates="projects")
 
     def to_dict(self):
         return {
@@ -52,3 +54,4 @@ class User(db.Model):
     password = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
+    projects = db.relationship("Project", backref="user", lazy=True)

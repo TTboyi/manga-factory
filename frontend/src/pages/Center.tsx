@@ -17,6 +17,7 @@ import Step2CharacterSetting from "./steps/Step2CharacterSetting";
 import Step3Preview from "./steps/Step3Preview";
 import Step4Export from "./steps/Step4Export";
 import type { Scene, VisualSpec } from "../types";
+import ProjectList from "./steps/ProjectList";
 
 export default function CenterPage() {
   const [step, setStep] = useState<number>(1);
@@ -60,16 +61,28 @@ export default function CenterPage() {
       <nav className="hidden md:block">
         <ul className="flex list-none">
           <li className="mx-1">
-            <button className="flex items-center px-4 py-2 rounded text-indigo-600 bg-indigo-50 hover:bg-indigo-100 text-sm font-medium">
-              <FaHome className="mr-2" />
-              工作台
-            </button>
+            <button
+  className={`flex items-center px-4 py-2 rounded text-sm font-medium ${
+    step !== 0
+      ? "text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
+      : "text-gray-600 hover:bg-gray-100"
+  }`}
+  onClick={() => setStep(1)}
+>
+  <FaHome className="mr-2" />
+  工作台
+</button>
           </li>
           <li className="mx-1">
-            <button className="flex items-center px-4 py-2 rounded text-gray-600 hover:bg-gray-100 text-sm font-medium">
-              <FaFolder className="mr-2" />
-              项目
-            </button>
+            <button
+  className={`flex items-center px-4 py-2 rounded text-gray-600 hover:bg-gray-100 text-sm font-medium ${
+    step === 0 ? "text-indigo-600 bg-indigo-50" : ""
+  }`}
+  onClick={() => setStep(0)}
+>
+  <FaFolder className="mr-2" />
+  项目
+</button>
           </li>
           <li className="mx-1">
             <button className="flex items-center px-4 py-2 rounded text-gray-600 hover:bg-gray-100 text-sm font-medium">
@@ -175,8 +188,26 @@ export default function CenterPage() {
 
   // ============ Main ============
   const MainContent = () => (
+    <div className="flex-1 flex flex-col overflow-y-auto bg-gray-50">
+    {/* ✅ 如果 step===0，显示项目列表，不显示主流程 */}
+    {step === 0 ? (
+      <div className="flex-1 overflow-y-auto bg-gray-50">
+        <ProjectList
+          onSelectProject={(proj) => {
+            setProjectId(proj.id || null);
+            setNovelText(proj.novel_text || "");
+            setNovelTextProcessed(proj.novel_text || "");
+            setScenes(proj.scenes || []);
+            setVisualSpec(proj.visual_spec || {});
+            setGeneratedImages(proj.images || []);
+            setStep(3); // 加载后跳到 step3 继续编辑
+          }}
+        />
+      </div>
+    ) : (
     <div className="flex-1 flex flex-col bg-gray-50 overflow-y-auto p-5">
       {/* 顶部标题 */}
+
       <div className="mb-5">
         <h2 className="text-[20px] font-semibold text-gray-800">
           {step === 1 && "输入小说文本"}
@@ -267,6 +298,8 @@ export default function CenterPage() {
         </span>
         
       </div>
+    </div>
+    )}
     </div>
   );
 

@@ -93,6 +93,17 @@
 6. **页面合成**：按照预设布局将分镜组合成完整漫画页面
 7. **输出与分享**：提供在线预览和多种格式的导出功能
 
+   <div style="text-align: center;">
+    <table style="margin: 0 auto;">
+    <tr>
+      <td><img src="etc_png/show03.png" alt="page03" width="200"></td>
+      <td><img src="etc_png/show02.png" alt="page02" width="200"></td>
+      <td><img src="etc_png/show01.png" alt="page01" width="200"></td>
+    </tr>
+  </table>
+  <p style="font-weight: bold; margin-bottom: 10px;">项目界面展示</p>
+</div>
+
 <div style="text-align: center;">
     <table style="margin: 0 auto;">
     <tr>
@@ -106,7 +117,8 @@
     </tr>
   </table>
   <p style="font-weight: bold; margin-bottom: 10px;">工作流结构组成示意图</p>
-</div>
+</div
+    
 
 ## 📦 安装指南
 
@@ -305,6 +317,11 @@ manga-factory/
 - 实时预览生成的漫画
 - 多种漫画风格选择
 
+<div style="text-align: center;">
+    <img src="doc/etc_png/规划.png" alt="产品规划图" width="600">
+    <p style="font-weight: bold; margin-top: 10px;">产品功能规划图</p>
+</div>
+
 ## 🤝 贡献指南
 
 我们欢迎所有形式的贡献！无论是代码、文档、设计还是想法建议。
@@ -377,6 +394,9 @@ VOLCENGINE_SERVICE_ID=your_service_id
 - 项目主页: https://github.com/TTboyi/manga-factory
 - 邮箱: your-email@example.com
 - 官方网站: https://manga-factory.com
+
+
+
 
 
 

@@ -52,14 +52,14 @@ export default function Step1TextInput({
   return (
     <div className="text-gray-700">
       {/* Section Header */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900">
           输入小说文本
         </h2>
         <p className="text-sm text-gray-500">
           上传文本文件或直接粘贴内容，我们将基于此生成漫画
         </p>
-      </div>
+      </div> */}
 
       {/* 两列卡片：左=文本输入，右=文件上传 */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">

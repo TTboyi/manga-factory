@@ -69,14 +69,14 @@ export default function Step4Export({
 
   return (
     <div className="text-gray-700">
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900">
           导出与保存
         </h2>
         <p className="text-sm text-gray-500">
           你可以将生成结果保存到数据库，或导出为 JSON 文件。
         </p>
-      </div>
+      </div> */}
 
       {/* 保存项目 */}
       <div className="bg-white rounded-lg shadow border border-gray-200 p-5 mb-6">

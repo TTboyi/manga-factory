@@ -1,7 +1,7 @@
 
 from flask import Flask
 from config import Config
-from extensions import db, jwt
+from extensions import db, jwt, redis_client
 from routes.auth import auth_bp
 #from routes.scene import scene_bp
 from routes.captcha import captcha_bp
@@ -15,6 +15,14 @@ from flask_jwt_extended import JWTManager
 from flask import jsonify
 from dotenv import load_dotenv
 load_dotenv()
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_identity,
+    create_access_token,
+    create_refresh_token,
+    get_jwt,
+)
+
 
 
 

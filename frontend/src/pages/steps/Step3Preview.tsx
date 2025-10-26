@@ -87,14 +87,14 @@ export default function Step3Preview({
 
   return (
     <div className="text-gray-700">
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900">
           场景识别与出图生成
         </h2>
         <p className="text-sm text-gray-500">
           系统会自动识别场景分镜，并生成漫画图像。
         </p>
-      </div>
+      </div> */}
 
       {/* 场景识别卡片 */}
       <div className="bg-white rounded-lg shadow border border-gray-200 p-5 mb-6">

@@ -1,112 +1,77 @@
 import axios from "axios";
-import type { Scene, VisualSpec, ImageGenResponse } from "../types";
+import type { Scene, VisualSpec } from "../types";
+
 // =====================
-// 🔧 基础 Axios 实例
+// 🔧 基础配置
 // =====================
-const API_BASE = "http://localhost:5000/";
+const API_BASE = "http://localhost:5000";
+
+// 创建 axios 实例
 export const apiClient = axios.create({
-  baseURL: API_BASE, // ✅ Flask 后端端口（原为 5000）
-  timeout: 30000,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  baseURL: API_BASE,
+  timeout: 600000, // 支持长任务
+  headers: { "Content-Type": "application/json" },
 });
 
-// 请求拦截器
+// =====================
+// 🔐 JWT 请求拦截器
+// =====================
 apiClient.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error) => Promise.reject(error)
 );
 
-// 响应拦截器
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error("API Error:", error);
-    return Promise.reject(error);
-  }
-);
-
 // =====================
-// 🧩 文件与项目相关接口（AI 漫画逻辑）
+// 🧩 小说与漫画项目接口
 // =====================
 
-
-
-// =====================
-// 🔐 用户认证相关接口
-// =====================
-export const authApi = {
-  register: (data: { nickname: string; password: string }) =>
-    apiClient.post("/auth/register", data),
-
-  login: (data: { nickname: string; password: string }) =>
-    apiClient.post("/auth/login", data),
-
-  refreshToken: () => apiClient.post("/auth/refresh"),
-
-  logout: () => apiClient.post("/auth/logout"),
-
-  sendEmailCaptcha: (data: { email: string }) =>
-    apiClient.post("/captcha/send_email", data),
-
-  emailCaptchaLogin: (data: { email: string; code: string }) =>
-    apiClient.post("/captcha/login_email", data),
-};
-
-
-// ========== 小说与场景 ==========
-
-/**
- * 上传小说文本 → 调用豆包生成规范小说 + 场景识别
- * 对应后端 POST /api/text/generate_novel
- */
-const api = axios.create({
-  baseURL: "http://localhost:5000", // 后端 Flask 根地址，无 /api 前缀
-  timeout: 600000, // 10分钟，避免生成图像之类的长任务直接超时
-});
-
-// ========== STEP1: 小说生成 ==========
-// 传入：用户输入的小说全文/大纲
-// 返回：{ novel_text: string }
-export async function generateNovel(text: string): Promise<{
-  novel_text: string;
-}> {
-  const res = await api.post("/text/generate_novel", { text });
+// STEP1: 小说生成
+export async function generateNovel(text: string): Promise<{ novel_text: string }> {
+  const res = await apiClient.post("/text/generate_novel", { text });
   return res.data;
 }
 
-// ========== STEP2: 视觉分析 ==========
-// 上传角色描述、风格描述、可选图片和小说全文
-// 返回：visual_spec 对象（role_features、art_style等）
+// STEP2: 视觉分析（上传文件）
 export async function analyzeVisualSpec(formData: FormData): Promise<any> {
-  const res = await api.post("/visual/analyze", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+  const token = localStorage.getItem("access_token");
+  const res = await axios.post(`${API_BASE}/visual/analyze`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    timeout: 600000,
   });
   return res.data;
 }
 
-// ========== STEP3: 场景识别（会在第3步组件里用到，先导出） ==========
+// STEP3: 场景识别
 export async function recognizeScenes(payload: {
   novel_text: string;
   visual_spec: any;
   num_shots?: number;
-}): Promise<{ scenes: any[] }> {
-  const res = await api.post("/scene/recognize", payload);
+}): Promise<{ scenes: Scene[] }> {
+  const res = await apiClient.post("/scene/recognize", payload);
   return res.data;
 }
 
-// ========== STEP3.5: 出图（第3步用） ==========
+// STEP3.5: 出图生成
 export async function generateStoryboard(payload: {
   novel_text: string;
-  scenes: any[];
-  visual_spec: any;
+  scenes: Scene[];
+  visual_spec: VisualSpec;
 }): Promise<{ images: string[]; prompts?: string[] }> {
-  const res = await api.post("/image/generate_storyboard", payload);
+  const res = await apiClient.post("/image/generate_storyboard", payload);
   return res.data;
 }
 
-// ========== STEP4: 保存（第4步用） ==========
+// STEP4: 保存项目
 export async function saveProject(payload: {
   id?: number;
   name: string;
@@ -115,25 +80,74 @@ export async function saveProject(payload: {
   visual_spec?: any;
   images?: string[];
 }): Promise<{ success: boolean; project_id: number }> {
-  const res = await api.post("/project/save", payload);
+  const res = await apiClient.post("/project/save", payload);
   return res.data;
 }
 
+// 读取完整项目
 export async function getProjectFull(id: number) {
-  const res = await api.get(`/project/get_full/${id}`);
+  const res = await apiClient.get(`/project/get_full/${id}`);
   return res.data;
 }
 
+// 获取当前用户的所有项目（用于卡片展示）
+export async function getMyProjects(): Promise<{
+  success: boolean;
+  message?: string;
+  projects?: {
+    id: number;
+    name: string;
+    updated_at: string;
+    preview_text: string;
+    image_cover?: string | null;
+  }[];
+}> {
+  const res = await apiClient.get("/project/my_list");
+  return res.data;
+}
 
+// =====================
+// 🔐 用户认证接口
+// =====================
+export const authApi = {
+  // 注册
+  register: (data: { nickname: string; password: string }) =>
+    apiClient.post("/auth/register", data),
 
+  // 登录
+  login: async (data: { nickname: string; password: string }) => {
+  const res = await apiClient.post("/auth/login", data);
 
+  // ✅ 兼容 code=0 或 code=200 两种情况
+  const tokenData = res.data?.data || res.data;
 
+  if (tokenData?.access_token) {
+    localStorage.setItem("access_token", tokenData.access_token);
+    localStorage.setItem("refresh_token", tokenData.refresh_token);
+    console.log("✅ 登录成功，已保存 Token");
+  } else {
+    console.warn("⚠️ 登录接口未返回 token，返回内容：", res.data);
+  }
 
+  return res.data;
+},
 
+  // 获取当前登录用户信息
+  getUserInfo: async () => {
+    const res = await apiClient.get("/auth/user/info");
+    return res.data;
+  },
 
+  // 刷新 Token
+  refreshToken: () => apiClient.post("/auth/refresh"),
 
-
-// // =====================
-// // 📦 默认导出
-// // =====================
-// export default api;
+  // 登出
+  logout: async () => {
+    const res = await apiClient.post("/auth/logout");
+    if (res.data.success) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+    }
+    return res.data;
+  },
+};

@@ -97,14 +97,14 @@ export default function Step2CharacterSetting({
   return (
     <div className="text-gray-700">
       {/* Section Header */}
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-900">
           角色与画风设定
         </h2>
         <p className="text-sm text-gray-500">
           定义主角的外观特征、服装、气质，以及整体漫画的视觉风格
         </p>
-      </div>
+      </div> */}
 
       {/* 两列卡片：左 = 角色特征，右 = 画面风格 */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
